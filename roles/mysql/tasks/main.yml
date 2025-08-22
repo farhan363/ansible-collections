@@ -1,0 +1,39 @@
+---
+- name: Install MySQL server
+  yum:
+    name: 
+      - mysql
+      - mysql-server
+      - python3-PyMySQL   # required for Ansible MySQL modules
+    state: present
+
+- name: Ensure MySQL service is running
+  service:
+    name: mysqld
+    state: started
+    enabled: yes
+
+- name: Secure MySQL root password
+  community.mysql.mysql_user:
+    name: root
+    password: "{{ vault_mysql_root_pass }}"
+    login_user: root
+    login_password: ""
+  ignore_errors: true   # first run may fail if password already set
+
+- name: Create application database
+  community.mysql.mysql_db:
+    name: myappdb
+    state: present
+    login_user: root
+    login_password: "{{ vault_mysql_root_pass }}"
+
+- name: Create DB user
+  community.mysql.mysql_user:
+    name: "{{ vault_mysql_user }}"
+    password: "{{ vault_mysql_password }}"
+    priv: 'myappdb.*:ALL'
+    state: present
+    login_user: root
+    login_password: "{{ vault_mysql_root_pass }}"
+

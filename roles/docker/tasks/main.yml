@@ -1,0 +1,43 @@
+---
+
+- name: Include tasks for RedHat
+  ansible.builtin.include_tasks: setup-RedHat.yml
+  when: ansible_os_family == "RedHat"
+
+- name: Include tasks for Debian
+  ansible.builtin.include_tasks: setup-Debian.yml
+  when: ansible_os_family == "Debian"
+
+- name: Include tasks for Archlinux
+  ansible.builtin.include_tasks: setup-Archlinux.yml
+  when: ansible_os_family == "Archlinux"
+
+- name: add users to the docker group
+  user:
+    name: "{{item}}"
+    groups: docker
+    append: yes
+  with_items: "{{docker_users}}"
+
+- name: create /etc/docker
+  file:
+    dest: /etc/docker
+    state: directory
+
+- name: configure docker daemon
+  template:
+    dest: /etc/docker/daemon.json
+    src: daemon.json.j2
+  notify: reload docker daemon
+
+- name: enable docker daemon
+  service:
+    name: "{{docker_daemon}}"
+    enabled: yes
+  when: docker_enabled
+
+- name: start docker daemon
+  service:
+    name: "{{docker_daemon}}"
+    state: started
+  when: docker_started
