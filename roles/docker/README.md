@@ -1,54 +1,38 @@
-10forge.docker
+Role Name
 =========
 
-Install and configure docker-ce.
+A brief description of the role goes here.
+
+Requirements
+------------
+
+Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
 
 Role Variables
 --------------
 
-Variables with default values. Values in curved brackets are by default empty. Empty values with asterisks are mandatory.
+A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
 
-    docker_daemon: docker
-    docker_daemon_config: {}
-    docker_enabled: true
-    docker_package: docker-ce
-    docker_started: true
-    docker_reload: reloaded
-    docker_users:
-      - root
-    docker_version: latest
+Dependencies
+------------
+
+A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
 
 Example Playbook
 ----------------
 
-    - hosts: centos7
+Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
+
+    - hosts: servers
       roles:
-      - role: 10f.docker
-        docker_daemon_config:
-          live-restore: true
-          storage-driver: overlay2
-          storage-opts:
-            - 'overlay2.override_kernel_check=true'
-
-    - hosts: ubuntu1604
-      roles:
-        - role: forge.docker
-          docker_users:
-            - foo
-            - bar
-          docker_version: 17.03.0~ce-0~ubuntu-xenial
-
-Restart vs reload
-------------------
-
-The docker daemon is reloaded after every configuration change to ensure the containers keep running. Because of this major options like the storage driver will not be activated on reload. If you need the daemon to restart set `docker_reload` to `restarted`.
+         - { role: username.rolename, x: 42 }
 
 License
 -------
 
-MIT
+BSD
 
 Author Information
 ------------------
 
-[Thomas Steinert](moenka@10forge.org)
+An optional section for the role authors to include contact information, or a website (HTML is not allowed).

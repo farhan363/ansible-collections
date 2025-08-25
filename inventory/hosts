@@ -1,5 +1,5 @@
 [webservers]
-ubuntu-web ansible_host=52.87.193.115 ansible_user=ubuntu ansible_private_key_file=/home/ubuntu/my-ansible-project/master-server.pem
+ubuntu-web ansible_host=3.92.239.152 ansible_user=ubuntu ansible_private_key_file=/home/ubuntu/ansible-collections/master-server.pem
 
 [dbservers]
-amazon-db ansible_host=54.145.190.48 ansible_user=ec2-user ansible_private_key_file=/home/ubuntu/my-ansible-project/master-server.pem
+amazon-db ansible_host=52.90.67.46 ansible_user=ec2-user ansible_private_key_file=/home/ubuntu/ansible-collections/master-server.pem

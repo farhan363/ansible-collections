@@ -1,39 +1,29 @@
+#SPDX-License-Identifier: MIT-0
 ---
-- name: Install MySQL server
-  yum:
-    name: 
-      - mysql
-      - mysql-server
-      - python3-PyMySQL   # required for Ansible MySQL modules
-    state: present
+# tasks file for mysql
 
-- name: Ensure MySQL service is running
+- name: Install Docker
+  yum:
+    name: docker
+    state: present
+- name: Ensure docker service is running
   service:
-    name: mysqld
+    name: docker
     state: started
     enabled: yes
-
-- name: Secure MySQL root password
-  community.mysql.mysql_user:
-    name: root
-    password: "{{ vault_mysql_root_pass }}"
-    login_user: root
-    login_password: ""
-  ignore_errors: true   # first run may fail if password already set
-
-- name: Create application database
-  community.mysql.mysql_db:
-    name: myappdb
-    state: present
-    login_user: root
-    login_password: "{{ vault_mysql_root_pass }}"
-
-- name: Create DB user
-  community.mysql.mysql_user:
-    name: "{{ vault_mysql_user }}"
-    password: "{{ vault_mysql_password }}"
-    priv: 'myappdb.*:ALL'
-    state: present
-    login_user: root
-    login_password: "{{ vault_mysql_root_pass }}"
+- name: Run MySQL Container
+  community.docker.docker_container:
+    name: myapp-mysql
+    image: mysql:8.1
+    restart_policy: always
+    state: enabled
+    env:
+      MYSQL_ROOT_PASSWORD: "{{ mysql_root_pass }}"
+      MYSQL_DATABASE: "{{ mysql_db }}"
+      MYSQL_USER: "{{ mysql_user }}"
+      MYSQL_PASSWORD: "{{ mysql_password }}"
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
 
