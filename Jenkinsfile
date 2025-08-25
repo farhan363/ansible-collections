@@ -16,8 +16,9 @@ pipeline {
 
         stage('Run Playbook') {
             steps {
-                sshagent(['Master-Server']) {
+               
                 withCredentials([string(credentialsId: 'ansible-vault-pass', variable: 'ANSIBLE_VAULT_PASS')]) {
+                sshagent(['Master-Server']) {
                     sh '''
                         # Write the Vault password into a temporary file
                         echo "$ANSIBLE_VAULT_PASS" > vault_pass.txt
