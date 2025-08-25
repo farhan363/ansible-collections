@@ -16,16 +16,16 @@ pipeline {
 
         stage('Run Playbook') {
             steps {
-               
-                withCredentials([string(credentialsId: 'ansible-vault-pass', variable: 'ANSIBLE_VAULT_PASS')], 
-                                 [string(credentialsId: 'Master-Server', variable: 'Private-Key')]) {
-            
+                withCredentials([
+                    string(credentialsId: 'ansible-vault-pass', variable: 'ANSIBLE_VAULT_PASS'),
+                    sshUserPrivateKey(credentialsId: 'Master-Server', keyFileVariable: 'SSH_KEY')
+                ]) {
                     sh '''
                         # Write the Vault password into a temporary file
                         echo "$ANSIBLE_VAULT_PASS" > vault_pass.txt
 
-                        # Run the playbook using that file
-                        ansible-playbook site.yml --key-file $Private-Key --vault-password-file vault_pass.txt
+                        # Run the playbook using the SSH private key
+                        ansible-playbook site.yml --private-key $SSH_KEY --vault-password-file vault_pass.txt
 
                         # Remove the temporary file for security
                         rm -f vault_pass.txt
