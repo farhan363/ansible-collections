@@ -1,28 +1,30 @@
-#SPDX-License-Identifier: MIT-0
+# SPDX-License-Identifier: MIT-0
 ---
 # tasks file for website
-- name: Ensure website path exist
-  file:
+
+- name: Ensure website path exists
+  ansible.builtin.file:
     path: /var/www/html
     state: directory
     owner: www-data
     group: www-data
     mode: '0755'
+
 - name: Copy Website Template
-  template:
+  ansible.builtin.template:
     src: index.html.j2
-    desc: /var/www/html/index.html
+    dest: /var/www/html/index.html
     owner: www-data
     group: www-data
     mode: '0644'
-- name: Pull Nginx Image from DockerHub
-  community.docker.docker_image:
-   name: mywebsite
-   image: nginx:latest
-   state: started
-   ports:
-    - "80:80"
-  volumes:
-    - "/var/www/html:/usr/share/nginx/html"
-  restart_policy: always
 
+- name: Run Nginx container with mounted website
+  community.docker.docker_container:
+    name: mywebsite
+    image: nginx:latest
+    state: started
+    restart_policy: always
+    ports:
+      - "80:80"
+    volumes:
+      - "/var/www/html:/usr/share/nginx/html"
