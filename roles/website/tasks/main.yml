@@ -18,7 +18,7 @@
 - name: Pull Nginx Image from DockerHub
   community.docker.docker_image:
    name: mywebsite
-   image: nginx: latest
+   image: nginx:latest
    state: started
    ports:
     - "80:80"
